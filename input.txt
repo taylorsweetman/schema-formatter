@@ -1,0 +1,33 @@
+                   Table "public.players"
+ Column |       Type       | Collation | Nullable | Default 
+--------+------------------+-----------+----------+---------
+ Rk     | integer          |           |          | 
+ Player | text             |           |          | 
+ Pos    | text             |           |          | 
+ Age    | integer          |           |          | 
+ Tm     | text             |           |          | 
+ G      | integer          |           |          | 
+ GS     | integer          |           |          | 
+ MP     | double precision |           |          | 
+ FG     | double precision |           |          | 
+ FGA    | double precision |           |          | 
+ FG%    | double precision |           |          | 
+ 3P     | double precision |           |          | 
+ 3PA    | double precision |           |          | 
+ 3P%    | double precision |           |          | 
+ 2P     | double precision |           |          | 
+ 2PA    | double precision |           |          | 
+ 2P%    | double precision |           |          | 
+ eFG%   | double precision |           |          | 
+ FT     | double precision |           |          | 
+ FTA    | double precision |           |          | 
+ FT%    | double precision |           |          | 
+ ORB    | double precision |           |          | 
+ DRB    | double precision |           |          | 
+ TRB    | double precision |           |          | 
+ AST    | double precision |           |          | 
+ STL    | double precision |           |          | 
+ BLK    | double precision |           |          | 
+ TOV    | double precision |           |          | 
+ PF     | double precision |           |          | 
+ PTS    | double precision |           |          |
