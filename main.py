@@ -6,6 +6,7 @@ from dataclasses import dataclass
 class ColumnSchema:
     name: str
     type: str
+    nullable: bool
 
 
 TOP_BREAK_PATTERN = "--+--"
@@ -28,10 +29,12 @@ def parse_columns(lines: List[str]) -> List[ColumnSchema]:
 
 def line_to_column_schema(line: str) -> Union[ColumnSchema, None]:
     line_data = line.split("|")
-    if len(line_data) < 2:
+    if len(line_data) < 3:
         return None
 
-    return ColumnSchema(line_data[0].strip(), line_data[1].strip())
+    return ColumnSchema(
+        line_data[0].strip(), line_data[1].strip(), line_data[3].strip() != "not null"
+    )
 
 
 def extract_relevant_lines(filename: str) -> Tuple[str, List[str]]:
@@ -66,10 +69,14 @@ def extract_table_name(lines: List[str]) -> str:
     return ""
 
 
+# TODO: construct yaml from object; remove this string building 
 def construct_dbt_output(file_name: str, cols: List[ColumnSchema]) -> str:
     result = f"version: 2\n\nmodels:\n  - name: {file_name}\n    columns:\n"
     for col in cols:
         result += f"      - name: {col.name}\n"
+        if not col.nullable:
+            result += f"        tests:\n"
+            result += f"          - not_null\n"
     return result
 
 
