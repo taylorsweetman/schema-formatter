@@ -10,7 +10,7 @@ class ColumnSchema:
 
 TOP_BREAK_PATTERN = "--+--"
 TABLE_NAME_PATTERN = 'Table "'
-INPUT = "input.txt"
+INPUT = "postgres_input.txt"
 DBT_OUTPUT = "dbt-output.yml"
 
 
