@@ -7,16 +7,12 @@ TOP_BREAK_PATTERN = "--+--"
 TABLE_NAME_PATTERN = 'Table "'
 
 
-def fetch_columns_pg(filename) -> Tuple[str, List[ColumnSchema]]:
-    (table_name, relevant_lines) = extract_relevant_lines(filename)
+def fetch_columns_pg(schema_text) -> Tuple[str, List[ColumnSchema]]:
+    (table_name, relevant_lines) = extract_relevant_lines(schema_text)
     return table_name, parse_columns(relevant_lines)
 
 
-# TODO: make into pure function x2
-def extract_relevant_lines(file_name: str) -> Tuple[str, List[str]]:
-    with open(file_name, "r") as f:
-        schema_text = f.read()
-
+def extract_relevant_lines(schema_text: str) -> Tuple[str, List[str]]:
     raw_lines = schema_text.split("\n")
     non_empty_lines = list(filter(lambda line: line != "", raw_lines))
 

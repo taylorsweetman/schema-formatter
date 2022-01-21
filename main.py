@@ -15,11 +15,15 @@ RUN_MODE = Mode.MS
 
 def main():
     if RUN_MODE == Mode.PG:
-        (table_name, columns) = fetch_columns_pg(PG_INPUT)
+        schema_text = read_file(PG_INPUT)
+
+        (table_name, columns) = fetch_columns_pg(schema_text)
         write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
 
     if RUN_MODE == Mode.MS:
-        (table_name, columns) = fetch_columns_ms(MS_INPUT)
+        schema_text = read_file(MS_INPUT)
+
+        (table_name, columns) = fetch_columns_ms(schema_text)
         write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
 
 
@@ -29,6 +33,9 @@ def construct_dbt_output(file_name: str, cols: List[ColumnSchema]) -> str:
         result += f"      - name: {col.name}\n"
     return result
 
+def read_file(file_name: str) -> str:
+    with open(file_name, "r") as f:
+        return f.read()
 
 def write_file(file_name: str, output: str):
     with open(file_name, "w") as f:

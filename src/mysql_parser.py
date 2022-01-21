@@ -7,16 +7,13 @@ TOP_BREAK_PATTERN = "| Field"
 PK = "PRI"
 
 
-def fetch_columns_ms(filename) -> Tuple[str, List[ColumnSchema]]:
-    (table_name, relevant_lines) = extract_relevant_lines(filename)
+def fetch_columns_ms(schema_text) -> Tuple[str, List[ColumnSchema]]:
+    (table_name, relevant_lines) = extract_relevant_lines(schema_text)
     print(parse_columns(relevant_lines))
     return table_name, parse_columns(relevant_lines)
 
 
-def extract_relevant_lines(file_name: str) -> Tuple[str, List[str]]:
-    with open(file_name, "r") as f:
-        schema_text = f.read()
-
+def extract_relevant_lines(schema_text: str) -> Tuple[str, List[str]]:
     raw_lines = schema_text.split("\n")
     relevant_lines = list(filter(lambda line: line.startswith("|"), raw_lines))
 
