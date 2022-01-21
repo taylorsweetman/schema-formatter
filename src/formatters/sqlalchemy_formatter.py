@@ -26,6 +26,7 @@ def construct_imports(columns: List[ColumnSchema], mode: Mode):
     return result
 
 # TODO is this better modeled as a dict?
+# TODO extract split logic to a separate function
 def type_mapper(type: str) -> str:
     if type == "int":
         return "Integer"
@@ -41,7 +42,19 @@ def type_mapper(type: str) -> str:
         return "DATETIME"
     elif type == "timestamp":
         return "TIMESTAMP"
+    elif type == "char":
+        return "CHAR"
     elif type.startswith("char"):
         return f"CHAR({type.split('(')[1].split(')')[0]})"
+    elif type == "varchar":
+        return "VARCHAR"
+    elif type.startswith("varchar"):
+        return f"VARCHAR({type.split('(')[1].split(')')[0]})"
+    elif type == "double":
+        return "FLOAT"
+    elif type == "bigint":
+        return "BIGINT"
+    elif type.startswith("bigint"):
+        return f"BIGINT({type.split('(')[1].split(')')[0]})"
     else:
         return type
