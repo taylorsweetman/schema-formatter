@@ -7,7 +7,11 @@ def construct_sqlalchemy_output(columns: List[ColumnSchema], mode: Mode, table_n
     result += f"class {table_name}({base_name}):\n"
     result += f"    __tablename__ = \"{table_name}\"\n\n"
     for col in columns:
-        result += f"    {col.name} = Column({type_mapper(col.type)})\n"
+        result += f"    {col.name} = Column({type_mapper(col.type)}"
+        if col.is_pk:
+            result += ", primary_key=True)\n"
+        else:
+            result += ")\n"
 
     return result
 
