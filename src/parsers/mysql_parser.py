@@ -9,7 +9,6 @@ PK = "PRI"
 
 def fetch_columns_ms(schema_text) -> Tuple[str, List[ColumnSchema]]:
     (table_name, relevant_lines) = extract_relevant_lines(schema_text)
-    print(parse_columns(relevant_lines))
     return table_name, parse_columns(relevant_lines)
 
 

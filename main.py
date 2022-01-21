@@ -1,14 +1,13 @@
-from typing import List
-
-from src.postgres_parser import fetch_columns_pg
-from src.mysql_parser import fetch_columns_ms
-from src.types import ColumnSchema, Mode
+from src.parsers import fetch_columns_pg, fetch_columns_ms
+from src.formatters import construct_sqlalchemy_output, construct_dbt_output
+from src.types import Mode
 
 
 PG_INPUT = "postgres-input.txt"
 MS_INPUT = "mysql-input.txt"
 
 DBT_OUTPUT = "dbt-output.yml"
+SQLALCHEMY_OUTPUT = "sqlalchemy-output.py"
 
 RUN_MODE = Mode.MS
 
@@ -25,13 +24,8 @@ def main():
 
         (table_name, columns) = fetch_columns_ms(schema_text)
         write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
+        write_file(SQLALCHEMY_OUTPUT, construct_sqlalchemy_output(columns))
 
-
-def construct_dbt_output(file_name: str, cols: List[ColumnSchema]) -> str:
-    result = f"version: 2\n\nmodels:\n  - name: {file_name}\n    columns:\n"
-    for col in cols:
-        result += f"      - name: {col.name}\n"
-    return result
 
 def read_file(file_name: str) -> str:
     with open(file_name, "r") as f:
