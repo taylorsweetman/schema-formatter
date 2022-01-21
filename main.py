@@ -1,19 +1,21 @@
 from typing import List
 
-from src.postgres_parser import extract_relevant_lines, parse_columns
+from src.postgres_parser import fetch_columns_pg
 from src.types import ColumnSchema, Mode
 
 
-INPUT = "postgres-input.txt"
+PG_INPUT = "postgres-input.txt"
+MS_INPUT = "mysql-input.txt"
+
 DBT_OUTPUT = "dbt-output.yml"
 
 RUN_MODE = Mode.PG
 
 
 def main():
-    (table_name, relevant_lines) = extract_relevant_lines(INPUT)
-    columns = parse_columns(relevant_lines)
-    write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
+    if RUN_MODE == Mode.PG:
+        (table_name, columns) = fetch_columns_pg(PG_INPUT)
+        write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
 
 
 def construct_dbt_output(file_name: str, cols: List[ColumnSchema]) -> str:
