@@ -3,11 +3,11 @@ from src.formatters import construct_sqlalchemy_output, construct_dbt_output
 from src.types import Mode
 
 
-PG_INPUT = "postgres-input.txt"
-MS_INPUT = "mysql-input.txt"
+PG_INPUT = "input/postgres-input.txt"
+MS_INPUT = "input/mysql-input.txt"
 
-DBT_OUTPUT = "dbt-output.yml"
-SQLALCHEMY_OUTPUT = "sqlalchemy-output.py"
+DBT_OUTPUT = "output/dbt-output.yml"
+SQLALCHEMY_OUTPUT = "output/sqlalchemy-output.py"
 
 RUN_MODE = Mode.MS
 
