@@ -24,7 +24,7 @@ def main():
 
         (table_name, columns) = fetch_columns_ms(schema_text)
         write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
-        write_file(SQLALCHEMY_OUTPUT, construct_sqlalchemy_output(columns))
+        write_file(SQLALCHEMY_OUTPUT, construct_sqlalchemy_output(columns, Mode.MS))
 
 
 def read_file(file_name: str) -> str:
