@@ -56,5 +56,9 @@ def type_mapper(type: str) -> str:
         return "BIGINT"
     elif type.startswith("bigint"):
         return f"BIGINT({type.split('(')[1].split(')')[0]})"
+    elif type == "smallint":
+        return "SMALLINT"
+    elif type.startswith("smallint"):
+        return f"SMALLINT({type.split('(')[1].split(')')[0]})"
     else:
         return type
