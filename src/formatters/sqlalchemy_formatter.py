@@ -25,13 +25,11 @@ def construct_imports(columns: List[ColumnSchema], mode: Mode):
     result += "\n\n"
     return result
 
-# TODO is this better modeled as a dict?
-# TODO extract split logic to a separate function
 def type_mapper(type: str) -> str:
     if type == "int":
         return "Integer"
     elif type.startswith("int"):
-        return f"Integer({type.split('(')[1].split(')')[0]})"
+        return f"Integer({get_size(type)})"
     elif type == "text":
         return "TEXT"
     elif type == "bool":
@@ -45,20 +43,23 @@ def type_mapper(type: str) -> str:
     elif type == "char":
         return "CHAR"
     elif type.startswith("char"):
-        return f"CHAR({type.split('(')[1].split(')')[0]})"
+        return f"CHAR({get_size(type)})"
     elif type == "varchar":
         return "VARCHAR"
     elif type.startswith("varchar"):
-        return f"VARCHAR({type.split('(')[1].split(')')[0]})"
+        return f"VARCHAR({get_size(type)})"
     elif type == "double":
         return "FLOAT"
     elif type == "bigint":
         return "BIGINT"
     elif type.startswith("bigint"):
-        return f"BIGINT({type.split('(')[1].split(')')[0]})"
+        return f"BIGINT({get_size(type)}"
     elif type == "smallint":
         return "SMALLINT"
     elif type.startswith("smallint"):
-        return f"SMALLINT({type.split('(')[1].split(')')[0]})"
+        return f"SMALLINT({get_size(type)})"
     else:
         return type
+
+def get_size(type: str) -> str:
+    return type.split('(')[1].split(')')[0]
