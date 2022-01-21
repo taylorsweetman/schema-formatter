@@ -13,7 +13,7 @@ def construct_sqlalchemy_output(columns: List[ColumnSchema], mode: Mode, table_n
 
 def construct_imports(columns: List[ColumnSchema], mode: Mode):
     result = "from sqlalchemy import Column"
-    sqlalchemy_types = {type_mapper(col.type) for col in columns}
+    sqlalchemy_types = {type_mapper(col.type).split("(")[0] for col in columns}
 
     for type in sqlalchemy_types:
         result += f", {type}"
@@ -21,16 +21,23 @@ def construct_imports(columns: List[ColumnSchema], mode: Mode):
     result += "\n\n"
     return result
 
+# TODO is this better modeled as a dict?
 def type_mapper(type: str) -> str:
     if type == "int":
         return "Integer"
+    elif type.startswith("int"):
+        return f"Integer({type.split('(')[1].split(')')[0]})"
     elif type == "text":
         return "TEXT"
     elif type == "bool":
         return "Boolean"
     elif type == "float":
-        return "Float"
+        return "FLOAT"
     elif type == "datetime":
-        return "DateTime"
+        return "DATETIME"
+    elif type == "timestamp":
+        return "TIMESTAMP"
+    elif type.startswith("char"):
+        return f"CHAR({type.split('(')[1].split(')')[0]})"
     else:
         return type
