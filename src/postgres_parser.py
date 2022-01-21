@@ -12,6 +12,7 @@ def fetch_columns_pg(filename) -> Tuple[str, List[ColumnSchema]]:
     return table_name, parse_columns(relevant_lines)
 
 
+# TODO: make into pure function x2
 def extract_relevant_lines(file_name: str) -> Tuple[str, List[str]]:
     with open(file_name, "r") as f:
         schema_text = f.read()
@@ -55,4 +56,5 @@ def line_to_column_schema(line: str) -> Union[ColumnSchema, None]:
     if len(line_data) < 2:
         return None
 
-    return ColumnSchema(line_data[0].strip(), line_data[1].strip())
+    # TODO fetch PK info
+    return ColumnSchema(line_data[0].strip(), line_data[1].strip(), False)

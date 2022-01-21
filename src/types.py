@@ -6,6 +6,7 @@ from enum import Enum
 class ColumnSchema:
     name: str
     type: str
+    is_pk: bool
 
 
 class Mode(Enum):
