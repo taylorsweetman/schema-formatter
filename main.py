@@ -1,81 +1,31 @@
-from typing import List, Tuple, Union
-from dataclasses import dataclass
+from src.parsers import fetch_columns_pg, fetch_columns_ms
+from src.formatters import construct_sqlalchemy_output, construct_dbt_output
+from src.utils import read_file, write_file
+from src.types import Mode
 
 
-@dataclass
-class ColumnSchema:
-    name: str
-    type: str
+PG_INPUT = "input/postgres-input.txt"
+MS_INPUT = "input/mysql-input.txt"
 
+DBT_OUTPUT = "output/dbt-output.yml"
+SQLALCHEMY_OUTPUT = "output/sqlalchemy-output.py"
 
-TOP_BREAK_PATTERN = "--+--"
-TABLE_NAME_PATTERN = 'Table "'
-INPUT = "input.txt"
-DBT_OUTPUT = "dbt-output.yml"
+RUN_MODE = Mode.MS
 
 
 def main():
-    (table_name, relevant_lines) = extract_relevant_lines(INPUT)
-    columns = parse_columns(relevant_lines)
-    write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
+    if RUN_MODE == Mode.PG:
+        schema_text = read_file(PG_INPUT)
 
+        (table_name, columns) = fetch_columns_pg(schema_text)
+        write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
 
-def parse_columns(lines: List[str]) -> List[ColumnSchema]:
-    col_schemas = list(map(line_to_column_schema, lines))
-    result = list(filter(None, col_schemas))
-    return result
+    if RUN_MODE == Mode.MS:
+        schema_text = read_file(MS_INPUT)
 
-
-def line_to_column_schema(line: str) -> Union[ColumnSchema, None]:
-    line_data = line.split("|")
-    if len(line_data) < 2:
-        return None
-
-    return ColumnSchema(line_data[0].strip(), line_data[1].strip())
-
-
-def extract_relevant_lines(filename: str) -> Tuple[str, List[str]]:
-    with open(filename, "r") as f:
-        schema_text = f.read()
-
-    raw_lines = schema_text.split("\n")
-    non_empty_lines = list(filter(lambda line: line != "", raw_lines))
-
-    table_name = extract_table_name(non_empty_lines)
-
-    start_idx = find_start_idx(non_empty_lines)
-    if start_idx < 0:
-        raise Exception("Could not find parse schema - no start index")
-
-    return (table_name, non_empty_lines[start_idx:])
-
-
-def find_start_idx(lines: List[str]) -> int:
-    for idx, line in enumerate(lines):
-        if TOP_BREAK_PATTERN in line:
-            return idx + 1
-
-    return -1
-
-
-def extract_table_name(lines: List[str]) -> str:
-    for line in lines:
-        if TABLE_NAME_PATTERN in line:
-            return line.split('"')[1].split(".")[1]
-
-    return ""
-
-
-def construct_dbt_output(file_name: str, cols: List[ColumnSchema]) -> str:
-    result = f"version: 2\n\nmodels:\n  - name: {file_name}\n    columns:\n"
-    for col in cols:
-        result += f"      - name: {col.name}\n"
-    return result
-
-
-def write_file(file_name: str, output: str):
-    with open(file_name, "w") as f:
-        f.write(output)
+        (table_name, columns) = fetch_columns_ms(schema_text)
+        write_file(DBT_OUTPUT, construct_dbt_output(table_name, columns))
+        write_file(SQLALCHEMY_OUTPUT, construct_sqlalchemy_output(columns, Mode.MS))
 
 
 if __name__ == "__main__":
