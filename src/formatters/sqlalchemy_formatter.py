@@ -53,7 +53,7 @@ def type_mapper(type: str) -> str:
     elif type == "bigint":
         return "BIGINT"
     elif type.startswith("bigint"):
-        return f"BIGINT({get_size(type)}"
+        return f"BIGINT({get_size(type)})"
     elif type == "smallint":
         return "SMALLINT"
     elif type.startswith("smallint"):
