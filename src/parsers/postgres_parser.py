@@ -5,6 +5,7 @@ from src.types import ColumnSchema
 
 TOP_BREAK_PATTERN = "--+--"
 TABLE_NAME_PATTERN = 'Table "'
+PRIMARY_KEY_PATTERN = "PRIMARY KEY"
 
 
 def fetch_columns_pg(schema_text) -> Tuple[str, List[ColumnSchema]]:
@@ -17,6 +18,7 @@ def extract_relevant_lines(schema_text: str) -> Tuple[str, List[str]]:
     non_empty_lines = list(filter(lambda line: line != "", raw_lines))
 
     table_name = extract_table_name(non_empty_lines)
+    print(extract_pks(non_empty_lines))
 
     start_idx = find_start_idx(non_empty_lines)
     if start_idx < 0:
@@ -31,6 +33,14 @@ def extract_table_name(lines: List[str]) -> str:
             return line.split('"')[1].split(".")[1]
 
     return ""
+
+def extract_pks(lines: List[str]) -> List[str]:
+    result = []
+    for line in lines:
+        if PRIMARY_KEY_PATTERN in line:
+            result.append(*line.split("(")[1].split(")")[0].strip().split(","))
+
+    return result
 
 
 def find_start_idx(lines: List[str]) -> int:
