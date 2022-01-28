@@ -5,6 +5,7 @@ from src.types import ColumnSchema
 
 TOP_BREAK_PATTERN = "| Field"
 PK = "PRI"
+NULLABLE = "YES"
 
 
 def fetch_columns_ms(schema_text) -> Tuple[str, List[ColumnSchema]]:
@@ -43,5 +44,5 @@ def line_to_column_schema(line: str) -> Union[ColumnSchema, None]:
         return None
 
     return ColumnSchema(
-        line_data[1].strip(), line_data[2].strip(), line_data[4].strip() == PK
+        line_data[1].strip(), line_data[2].strip(), line_data[4].strip() == PK, line_data[3].strip() == NULLABLE
     )
